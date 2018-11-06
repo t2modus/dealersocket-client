@@ -1,4 +1,6 @@
-require "dealersocket/client/version"
+# frozen_string_literal: true
+
+require 'dealersocket/client/version'
 
 module Dealersocket
   module Client

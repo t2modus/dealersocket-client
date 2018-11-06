@@ -1,0 +1,38 @@
+AllCops:
+  TargetRailsVersion: 5.2
+  TargetRubyVersion: 2.5
+
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*.rb'
+    - 'node_modules/**/*'
+    - 'bin/*'
+
+Rails:
+  Enabled: true
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/AbcSize:
+  Max: 30
+
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    inject: reduce
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/RedundantSelf:
+  Enabled: false
+
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
