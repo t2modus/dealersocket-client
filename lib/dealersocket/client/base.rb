@@ -16,15 +16,16 @@ module Dealersocket
         end
 
         def generate_hmac_hash_for_authentication(data)
-          key = ENV['DEALERSOCKET_SECRET_KEY']
           digest = OpenSSL::Digest.new('sha256')
-          Base64.encode64(OpenSSL::HMAC.digest(digest, key, data)).strip
+          Base64.encode64(OpenSSL::HMAC.digest(digest, Configuration.instance.secret_key, data)).strip
         end
 
         def handle_response(response, success_codes = [200])
-          # TODO: Figure out if this is a thing
-          # success = success_codes.include? response.code
-          # raise Error, "Received an error (#{response.code}) from the Dealersocket Servers: #{response.body}" unless succeeded
+          succeeded = success_codes.include? response.code
+          if !succeeded
+            
+            raise Error, "Received an error (#{response.code}) from the Dealersocket Servers: #{response.body}"
+          end
           Hash.from_xml(response.body)
         end
 

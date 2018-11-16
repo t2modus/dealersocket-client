@@ -4,47 +4,65 @@ module Dealersocket
   module Client
     # This class is responsible for logic for CRUD actions of Dealersocket customers
     class Customer < Base
-      def create(customer_params)
-        begin
-          request(
-            method: :post,
-            path: 'Customer',
-            body: create_or_update_customer_xml(customer_params.merge(request_type: 'IC'))
-          )
-        rescue REXML::ParseException
-          handle_parse_exception(response, customer_object)
-        end
-        [check_customer_response(body['Response']), customer_object]
-      end
+      CUSTOMER_INFO_FIELDS = %w[ShowCustomerInformation ShowCustomerInformationDataArea CustomerInformation].freeze
+      INFO_TO_PARTY = %w[CustomerInformationDetail CustomerParty].freeze
 
-      def find
-      end
+      attr_accessor :id, :given_name, :family_name, :phone_numbers, :emails, :addresses
 
-      def search
-      end
-
-      def update(customer_params)
-        request(
-          method: :put,
-          path: 'Customer',
-          body: create_or_update_customer_xml(customer_params.merge(request_type: 'UC'))
-        )
+      def initialize(customer_info)
+        party_hash = customer_info.dig(*INFO_TO_PARTY)
+        person = party_hash['SpecifiedPerson']
+        self.id = party_hash['PartyID']
+        self.given_name = person['GivenName']
+        self.family_name = person['FamilyName']
+        self.phone_numbers = define_phone_numbers(person['TelephoneCommunication'])
+        self.emails = define_emails(person['URICommunication'])
+        self.addresses = person['PostalAddress']
       end
 
       private
 
-      def handle_parse_exception(response, customer_object)
-        response_text = response.body.to_s
-        customer_object, body = if response_text =~ /DUPLICATE_ENTITY/
-                                  handle_duplicates(response_text, dealership_id)
-                                elsif response_text =~ /ENTITY_NOT_NULL/ && t2_customer.present?
-                                  handle_not_null(response_text, t2_customer)
-                                end
+      def define_phone_numbers(phones)
+        [phones].flatten.compact.map { |phone| { phone['CompleteNumber'] => phone['UseCode'] } }
       end
 
-      def handle_duplicates(response_text, dealership_id)
-        duplicate_id = response_text.scan(/\[[0-9]+/).first&.tr('^0-9', '')&.to_i
-        customer_object = Customer.find
+      def define_emails(comms)
+        [comms].flatten.compact.map { |comm| comm['URIID'] if comm['ChannelCode'].match?(/email/i) }.compact
+      end
+
+      class << self
+        def create(customer_params)
+          body = request(
+            method: :post,
+            path: 'Customer',
+            body: XML::Customer.new(customer_params.merge(transaction_type_code: 'IC')).create_or_update
+          )
+          entity_id = body.dig('Response', 'EntityId')
+          find(dealer_number_id: customer_params[:dealer_number_id], customer_id: entity_id)
+        end
+
+        def find(customer_params)
+          body = request(method: :post, path: 'SearchEntity', body: XML::Customer.new(customer_params).find)
+          customer_info = [body.dig(*CUSTOMER_INFO_FIELDS)].flatten.compact.first
+          new customer_info
+        end
+
+        def search(customer_params)
+          body = request(method: :post, path: 'SearchEntity', body: XML::Customer.new(customer_params).search)
+          customers_info = [body.dig(*CUSTOMER_INFO_FIELDS)].flatten.compact
+          customers_info.map do |customer_info|
+            new customer_info
+          end
+        end
+
+        def update(customer_params)
+          request(
+            method: :put,
+            path: 'Customer',
+            body: XML::Customer.new(customer_params.merge(transaction_type_code: 'UC')).create_or_update
+          )
+          true
+        end
       end
     end
   end

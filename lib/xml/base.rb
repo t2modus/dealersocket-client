@@ -12,7 +12,7 @@ module XML
     def application_area(xml, service_message_id)
       xml.ApplicationArea do
         xml.Sender do
-          xml.CreatorNamecode 'T2Modus'
+          xml.CreatorNameCode 'T2Modus'
           xml.SenderNameCode 'T2Modus'
           xml.DealerNumberID @variables[:dealer_number_id]
         end

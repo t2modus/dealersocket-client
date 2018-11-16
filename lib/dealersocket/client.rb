@@ -4,7 +4,7 @@ require 'active_support/all'
 # used to build out HTML
 require 'nokogiri'
 
-%w[base activity base configuration customer event version].each do |path|
+%w[base activity base configuration customer error event version].each do |path|
   require_relative "client/#{path}"
 end
 
