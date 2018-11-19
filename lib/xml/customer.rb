@@ -8,7 +8,7 @@ module XML
         xml.GetCustomerInformation(default_namespace_hash) do
           application_area(xml, 'Customer')
           customer_information_fields(xml) do
-            xml.PartyID @variables[:customer_id]
+            xml.PartyID @variables[:id]
           end
         end
       end.to_xml
@@ -107,7 +107,7 @@ module XML
     end
 
     def name_xml(xml)
-      { 'ID' => :customer_id, 'GivenName' => :given_name, 'FamilyName' => :family_name }.each do |xml_key, variable_key|
+      { 'ID' => :id, 'GivenName' => :given_name, 'FamilyName' => :family_name }.each do |xml_key, variable_key|
         xml.send(xml_key, @variables[variable_key]) if @variables[variable_key].present?
       end
     end
