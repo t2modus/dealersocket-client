@@ -7,9 +7,9 @@ module Dealersocket
       CUSTOMER_INFO_FIELDS = %w[ShowCustomerInformation ShowCustomerInformationDataArea CustomerInformation].freeze
       INFO_TO_PARTY = %w[CustomerInformationDetail CustomerParty].freeze
 
-      attr_accessor :id, :given_name, :family_name, :phone_numbers, :emails, :addresses
+      attr_accessor :id, :given_name, :family_name, :phone_numbers, :emails, :addresses, :dealer_number_id
 
-      def initialize(customer_info)
+      def initialize(customer_info, dealer_number_id)
         party_hash = customer_info.dig(*INFO_TO_PARTY)
         person = party_hash['SpecifiedPerson']
         self.id = party_hash['PartyID']
@@ -18,6 +18,7 @@ module Dealersocket
         self.phone_numbers = define_phone_numbers(person['TelephoneCommunication'])
         self.emails = define_emails(person['URICommunication'])
         self.addresses = person['PostalAddress']
+        self.dealer_number_id = dealer_number_id
       end
 
       private
@@ -32,6 +33,7 @@ module Dealersocket
 
       class << self
         def create(customer_params)
+          validate_params(%i[dealer_number_id privacy_indicator], customer_params)
           body = request(
             method: :post,
             path: 'Customer',
@@ -42,20 +44,23 @@ module Dealersocket
         end
 
         def find(customer_params)
+          validate_params(%i[dealer_number_id customer_id], customer_params)
           body = request(method: :post, path: 'SearchEntity', body: XML::Customer.new(customer_params).find)
           customer_info = [body.dig(*CUSTOMER_INFO_FIELDS)].flatten.compact.first
-          new customer_info
+          new customer_info, customer_params[:dealer_number_id]
         end
 
         def search(customer_params)
+          validate_params(%i[dealer_number_id], customer_params)
           body = request(method: :post, path: 'SearchEntity', body: XML::Customer.new(customer_params).search)
           customers_info = [body.dig(*CUSTOMER_INFO_FIELDS)].flatten.compact
           customers_info.map do |customer_info|
-            new customer_info
+            new customer_info, customer_params[:dealer_number_id]
           end
         end
 
         def update(customer_params)
+          validate_params(%i[dealer_number_id customer_id], customer_params)
           request(
             method: :put,
             path: 'Customer',

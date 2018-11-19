@@ -22,8 +22,7 @@ module Dealersocket
 
         def handle_response(response, success_codes = [200])
           succeeded = success_codes.include? response.code
-          if !succeeded
-            
+          unless succeeded
             raise Error, "Received an error (#{response.code}) from the Dealersocket Servers: #{response.body}"
           end
           Hash.from_xml(response.body)
@@ -41,6 +40,12 @@ module Dealersocket
         def validate_configured!
           error_message = 'Dealersocket must be configured with a valid API public key and secret key before use.'
           raise Error, error_message unless Configuration.instance.valid?
+        end
+
+        def validate_params(required_keys, params)
+          missing_params = required_keys - params.keys
+          return if missing_params.empty?
+          raise Error, "The following parameters are required for your request: #{missing_params.join(', ')}"
         end
       end
     end
