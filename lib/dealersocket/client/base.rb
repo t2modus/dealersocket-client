@@ -43,8 +43,8 @@ module Dealersocket
         end
 
         def validate_params(required_keys, params)
-          missing_params = required_keys - params.keys
-          return if missing_params.empty?
+          all_required_params_present = required_keys.all? { |key| params[key].present? }
+          return if all_required_params_present
           raise Error, "The following parameters are required for your request: #{missing_params.join(', ')}"
         end
       end

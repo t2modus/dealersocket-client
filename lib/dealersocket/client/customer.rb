@@ -36,7 +36,7 @@ module Dealersocket
 
       class << self
         def create(customer_params)
-          validate_params(%i[dealer_number_id privacy_indicator], customer_params)
+          validate_params(%i[dealer_number_id privacy_indicator given_name family_name], customer_params)
           body = request(
             method: :post,
             path: 'Customer',
@@ -66,7 +66,7 @@ module Dealersocket
           party_hash = customer_info.dig(*INFO_TO_PARTY)
           person = party_hash['SpecifiedPerson']
           address = person['PostalAddress'] || {}
-          phone_numbers = person['TelephoneCommunication'] || []
+          phone_numbers = [person['TelephoneCommunication']].flatten.compact
           phone_number_hash = phone_numbers.each_with_object({}) do |phone_number, object|
             key = phone_number['UseCode'].downcase.gsub('mobile', 'cell').to_sym
             object[key] = phone_number['CompleteNumber']
