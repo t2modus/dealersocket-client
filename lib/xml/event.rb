@@ -24,16 +24,16 @@ module XML
             end
             xml.customer do
               xml.contact do
-                xml.name('part' => 'first') { xml.text @variables[:first_name] }
-                xml.name('part' => 'last') { xml.text @variables[:last_name] }
-                xml.email @variables[:email]
+                xml.name('part' => 'first') { xml.text @variables[:given_name] }
+                xml.name('part' => 'last') { xml.text @variables[:family_name] }
+                xml.email @variables[:uriid]
                 xml.phone('type' => 'voice', 'time' => 'evening') { xml.text @variables[:phone] }
                 xml.address do
-                  xml.street('line' => '1') { xml.text @variables[:street_1] }
-                  xml.street('line' => '2') { xml.text @variables[:street_2] }
-                  xml.city @variables[:city]
+                  xml.street('line' => '1') { xml.text @variables[:line_one] }
+                  xml.street('line' => '2') { xml.text @variables[:line_two] }
+                  xml.city @variables[:city_name]
                   xml.regioncode @variables[:state]
-                  xml.postalcode @variables[:postalcode]
+                  xml.postalcode @variables[:postcode]
                 end
               end
             end
@@ -44,7 +44,7 @@ module XML
               xml.name('part' => 'full') { xml.text 'T2modus.com' }
               xml.email 'support@t2modus.com'
               xml.contact do
-                xml.name('part' => 'full') { xml.text 'T2 Modus'}
+                xml.name('part' => 'full') { xml.text 'T2 Modus' }
                 xml.email 'support@t2modus.com'
               end
             end
@@ -64,10 +64,10 @@ module XML
                 xml.SalesActivity do
                   xml.SalesPersonName
                   xml.Vehicle do
-                    xml.ManufacturerName @variables[:manufacturer_name]
-                    xml.ModelDescription @variables[:model_description]
-                    xml.ModelYear @variables[:model_year]
-                    xml.VehicleID @variables[:vehicle_id]
+                    xml.ManufacturerName @variables[:make]
+                    xml.ModelDescription @variables[:model]
+                    xml.ModelYear @variables[:year]
+                    xml.VehicleID @variables[:vin]
                     xml.VehicleNote @variables[:vehicle_note]
                     xml.VehicleStockString
                   end
@@ -80,16 +80,17 @@ module XML
                 xml.SaleClassCode 'New'
                 xml.CustomerProspect do
                   xml.ProspectParty do
-                    xml.PartyID @variables[:party_id]
+                    xml.PartyID @variables[:customer_id]
                   end
                 end
                 xml.DocumentationIdentificationGroup do
                   xml.DocumentationIdentification do
-                    xml.DocumentID @variables[:event_id]
+                    xml.DocumentID @variables[:id]
                   end
                 end
                 xml.LeadPreference do
-                  xml.PriorityRankingNumeric '1'
+                  # 1=Hot, 2=Medium, 3=Cold
+                  xml.PriorityRankingNumeric @variables[:priority_ranking]
                 end
                 xml.ProviderParty do
                   xml.PartyID 'T2Modus'
