@@ -21,21 +21,20 @@ module Dealersocket
       end
 
       def update(event_params)
-        # self.class.validate_params(%i[ANYTHING??], event_params)
-        self.class.request(method: :put, path: 'eventsales', body: XML::Event.new(event_params).update)
+        event_params = self.attributes.merge(event_params)
+        self.class.validate_params(%i[id], event_params)
+        self.class.request(method: :post, path: 'eventsales', body: XML::Event.new(event_params).update)
         true
       end
 
       class << self
         def create(event_params)
-          # validate_params(%i[ANYTHING??], event_params)
+          validate_params(%i[direct_lead_id], event_params)
           direct_lead_id = event_params[:direct_lead_id]
+          url = "https://oemwebsecure.dealersocket.com/DSOEMLead/US/DCP/ADF/1/SalesLead/#{direct_lead_id}"
           username_and_password = "#{ENV['DEALERSOCKET_USERNAME']}:#{ENV['DEALERSOCKET_PASSWORD']}"
           response = HTTP.headers(:accept => 'application/xml', 'Authorization' => username_and_password)
-                         .post(
-                           "https://oemwebsecure.dealersocket.com/DSOEMLead/US/DCP/ADF/1/SalesLead/#{direct_lead_id}",
-                           body: XML::Event.new(event_params).create
-                         )
+                         .post(url, body: XML::Event.new(event_params).create)
           body = Hash.from_xml(response.body).dig('LeadResponse')
           id = [body['DSLeadId'].to_i, body['DSExistingLeadId'].to_i].max
           return false if id.blank? || id.zero?

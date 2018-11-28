@@ -3,7 +3,7 @@
 module XML
   # This class dynamically builds event/opportunity xml to send to dealersocket
   class Event < Base
-    def find_or_create
+    def create
       Nokogiri::XML::Builder.new do |xml|
         xml.adf do
           xml.prospect do
@@ -74,9 +74,8 @@ module XML
                 end
               end
               xml.SalesLeadHeader do
-                xml.DocumentDateTime
                 xml.LeadComments
-                xml.LeadInterestCode 'Purchase'
+                xml.LeadInterestCode 'B'
                 xml.SaleClassCode 'New'
                 xml.CustomerProspect do
                   xml.ProspectParty do
