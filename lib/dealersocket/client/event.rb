@@ -4,7 +4,7 @@ module Dealersocket
   module Client
     # This class is responsible for logic for CRUD actions of Dealersocket events/opportunities
     class Event < Base
-      APPROVED_ATTRIBUTES = %i[id customer_id].freeze
+      APPROVED_ATTRIBUTES = %i[id customer_id dealer_number_id].freeze
 
       attr_accessor(*APPROVED_ATTRIBUTES)
 
@@ -39,7 +39,7 @@ module Dealersocket
           id = [body['DSLeadId'].to_i, body['DSExistingLeadId'].to_i].max
           return false if id.blank? || id.zero?
           customer_id = body['DSCustomerId']
-          new(id: id, customer_id: customer_id)
+          new(id: id, customer_id: customer_id, dealer_number_id: event_params[:dealer_number_id])
         end
       end
     end
