@@ -4,18 +4,18 @@ module XML
   # This class dynamically builds customer xml to send to dealersocket
   class Customer < Base
     def find
-      Nokogiri::XML::Builder.new do |xml|
+      build_xml do |xml|
         xml.GetCustomerInformation(default_namespace_hash) do
           application_area(xml, 'Customer')
           customer_information_fields(xml) do
             xml.PartyID @variables[:id]
           end
         end
-      end.to_xml
+      end
     end
 
     def search
-      Nokogiri::XML::Builder.new do |xml|
+      build_xml do |xml|
         xml.GetCustomerInformation(default_namespace_hash) do
           application_area(xml, 'Customer')
           customer_information_fields(xml) do
@@ -36,11 +36,11 @@ module XML
             end
           end
         end
-      end.to_xml
+      end
     end
 
     def create_or_update
-      Nokogiri::XML::Builder.new do |xml|
+      build_xml do |xml|
         xml.ProcessCustomerInformation(default_namespace_hash) do
           application_area(xml, 'Customer')
           xml.ProcessCustomerInformationDataArea do
@@ -63,7 +63,7 @@ module XML
             end
           end
         end
-      end.to_xml
+      end
     end
 
     private

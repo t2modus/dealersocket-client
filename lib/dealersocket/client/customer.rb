@@ -9,29 +9,15 @@ module Dealersocket
       CUSTOMER_INFO_FIELDS = %w[ShowCustomerInformation ShowCustomerInformationDataArea CustomerInformation].freeze
       INFO_TO_PARTY = %w[CustomerInformationDetail CustomerParty].freeze
 
-      attr_accessor(*APPROVED_ATTRIBUTES)
-
-      def initialize(attributes)
-        attributes.slice(*APPROVED_ATTRIBUTES).each do |k, v|
-          self.send("#{k}=", v)
-        end
-      end
-
-      def attributes
-        APPROVED_ATTRIBUTES.each_with_object({}) do |key, hash|
-          hash[key] = self.send(key)
-        end
-      end
-
       def update(customer_params)
         updated_params = self.attributes.merge(customer_params)
         self.class.validate_params(%i[dealer_number_id id privacy_indicator given_name family_name], updated_params)
-        self.class.request(
+        response = self.class.request(
           method: :put,
           path: 'Customer',
           body: XML::Customer.new(updated_params.merge(transaction_type_code: 'UC')).create_or_update
         )
-        true
+        response.dig('Response', 'Success') == 'true'
       end
 
       class << self

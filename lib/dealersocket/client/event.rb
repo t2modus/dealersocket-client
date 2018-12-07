@@ -6,20 +6,6 @@ module Dealersocket
     class Event < Base
       APPROVED_ATTRIBUTES = %i[id customer_id dealer_number_id].freeze
 
-      attr_accessor(*APPROVED_ATTRIBUTES)
-
-      def initialize(attributes)
-        attributes.slice(*APPROVED_ATTRIBUTES).each do |k, v|
-          self.send("#{k}=", v)
-        end
-      end
-
-      def attributes
-        APPROVED_ATTRIBUTES.each_with_object({}) do |key, hash|
-          hash[key] = self.send(key)
-        end
-      end
-
       def update(event_params)
         event_params = self.attributes.merge(event_params)
         self.class.validate_params(%i[id], event_params)

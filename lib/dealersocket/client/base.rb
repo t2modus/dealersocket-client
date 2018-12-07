@@ -5,8 +5,26 @@ module Dealersocket
     # This class is the base class containing logic common to all Dealersocket API classes
     class Base
       BASE_URL = 'https://api.dealersocket.com/api/DealerSocket/'
+      attr_reader :attributes
+
+      def initialize(attributes)
+        @attributes = attributes.symbolize_keys.slice(*self.class.approved_attributes).with_indifferent_access
+        self.define_attr_accessors
+      end
+
+      def define_attr_accessors
+        return if @attributes.blank?
+        @attributes.each_key do |attribute|
+          define_singleton_method(attribute) { @attributes[attribute] }
+          define_singleton_method("#{attribute}=") { |v| @attributes[attribute] = v }
+        end
+      end
 
       class << self
+        def approved_attributes
+          self::APPROVED_ATTRIBUTES
+        end
+
         def create_http_request(data)
           hash = generate_hmac_hash_for_authentication(data)
           HTTP.headers(

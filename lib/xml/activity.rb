@@ -4,7 +4,7 @@ module XML
   # This class dynamically builds Activity to send to dealersocket
   class Activity < Base
     def create
-      Nokogiri::XML::Builder.new do |xml|
+      build_xml do |xml|
         xml.ActivityInsert(
           'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
           'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema'
@@ -19,7 +19,7 @@ module XML
           xml.DueDateTime @variables[:due_date].strftime('%Y-%m-%dT%H:%M:%S.%6NZ')
           xml.Note @variables[:note]
         end
-      end.to_xml
+      end
     end
   end
 end

@@ -25,6 +25,10 @@ module XML
       end
     end
 
+    def build_xml(&block)
+      Nokogiri::XML::Builder.new(&block).to_xml
+    end
+
     def default_namespace_hash
       {
         'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
