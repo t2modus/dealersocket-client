@@ -82,8 +82,8 @@ module XML
                     xml.PartyID @variables[:customer_id]
                   end
                 end
-                xml.DocumentationIdentificationGroup do
-                  xml.DocumentationIdentification do
+                xml.DocumentIdentificationGroup do
+                  xml.DocumentIdentification do
                     xml.DocumentID @variables[:id]
                   end
                 end
@@ -92,7 +92,7 @@ module XML
                   xml.PriorityRankingNumeric @variables[:priority_ranking]
                 end
                 xml.ProviderParty do
-                  xml.PartyID 'T2Modus'
+                  xml.PartyID 'DCP'
                 end
               end
             end

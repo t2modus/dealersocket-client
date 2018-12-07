@@ -23,8 +23,8 @@ module Dealersocket
       def update(event_params)
         event_params = self.attributes.merge(event_params)
         self.class.validate_params(%i[id], event_params)
-        self.class.request(method: :post, path: 'eventsales', body: XML::Event.new(event_params).update)
-        true
+        response = self.class.request(method: :post, path: 'eventsales', body: XML::Event.new(event_params).update)
+        response.dig('Response', 'Success') == 'true'
       end
 
       class << self
