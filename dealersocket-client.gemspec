@@ -4,6 +4,8 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dealersocket/client/version'
 
+# shortening this method would arguablly make this less readable
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name          = 'dealersocket-client'
   spec.version       = Dealersocket::Client::VERSION
@@ -29,10 +31,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'minitest', '~> 5.0'
-  # spec.add_development_dependency 'minitest-reporters'
-  # spec.add_development_dependency 'mocha'
+  spec.add_development_dependency 'minitest-reporters'
+  spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'rake', '~> 10.0'
-  # spec.add_development_dependency 'webmock'
+  spec.add_development_dependency 'webmock'
 end
+# rubocop:enable Metrics/BlockLength
