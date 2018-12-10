@@ -15,7 +15,7 @@ module XML
               xml.vendorname @variables[:vendorname]
             end
             xml.provider do
-              xml.name('part' => 'full') { xml.text 'T2modus.com' }
+              xml.name('part' => 'full') { xml.text @variables[:employee_name] }
               xml.email 'support@t2modus.com'
               xml.contact do
                 xml.name('part' => 'full') { xml.text 'T2 Modus' }
@@ -97,7 +97,11 @@ module XML
           xml.PriorityRankingNumeric @variables[:priority_ranking]
         end
         xml.ProviderParty do
-          xml.PartyID @variables[:provider_party_id]
+          given_name, family_name = @variables[:employee_name].split
+          xml.SpecifiedPerson do
+            xml.GivenName given_name
+            xml.FamilyName family_name
+          end
         end
       end
     end
