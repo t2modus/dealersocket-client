@@ -11,7 +11,7 @@ module Dealersocket
           validate_params(%i[dealer_number_id customer_id event_id activity_type due_date], activity_params)
           body = request(method: :post, path: 'Activity', body: XML::Activity.new(activity_params).create)
           id = body.dig('ActivityResponse', 'ActivityId')
-          return false if id.blank?
+          raise Error, body.dig('ActivityResponse', 'ErrorMessage') if id.blank? || id == '0'
           new(
             id: id,
             customer_id: activity_params[:customer_id],
