@@ -1,8 +1,6 @@
 # Dealersocket::Client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dealersocket/client`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A client library written in plain old Ruby to facilitate working with the Dealersocket API from within our projects. The original thought was to set this up in such a way as to enable any company to use the code, but for now there are still lots of hard coded variables that will only work for T2's projects.
 
 ## Installation
 
@@ -16,13 +14,34 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install dealersocket-client
-
 ## Usage
 
-TODO: Write usage instructions here
+For initial setup, you'll need to either configure the client via an initializer:
+```ruby
+Dealersocket::Client.configure do |config|
+  config.public_key = <PUBLIC_KEY_HERE>
+  config.secret_key = <SECRET_KEY_HERE>
+  config.username = <USERNAME_HERE>
+  config.password = <PASSWORD HERE>
+end
+```
+OR
+
+You'll set the the following environment variables:
+- DEALERSOCKET_PUBLIC_KEY
+- DEALERSOCKET_SECRET_KEY
+- DEALERSOCKET_USERNAME (only used for `Event.create`)
+- DEALERSOCKET_PASSWORD (only used for `Event.create`)
+
+Usage is pretty straightforward, as the client models are setup in a way to act like ActiveRecord. I've taken the hashes returned from Dealersocket and made a thin wrapper around them so that objects can be interacted with very similarly to ActiveRecord objects.
+
+```ruby
+customer = Dealersocket::Client::Customer.find(id: 12342, dealer_number_id: '372_32')
+customer.id = 12342
+customer.update(family_name: 'Lopez')
+```
+
+Most errors should be handled within the implementation code. This gem has basic error handling and normally throws errors after formatting them a little.
 
 ## Development
 
@@ -33,10 +52,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/dealersocket-client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
