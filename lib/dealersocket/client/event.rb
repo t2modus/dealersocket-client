@@ -25,7 +25,7 @@ module Dealersocket
                                   'Authorization' => Configuration.instance.username_and_password)
                          .post(url, body: XML::Event.new(event_params).create)
           body = Hash.from_xml(response.body).dig('LeadResponse')
-          id = [body['DSLeadId'].to_i, body['DSExistingLeadId'].to_i].max
+          id = [body['DSLeadId'].to_i, body['DSExistingLeadId'].to_i].max if body.is_a?(Hash)
           return false if id.blank? || id.zero?
           customer_id = body['DSCustomerId']
           new(id: id, customer_id: customer_id, dealer_number_id: event_params[:dealer_number_id])
