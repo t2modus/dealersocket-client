@@ -101,7 +101,7 @@ module XML
       xml.URICommunication do
         xml.URIID @variables[:uriid]
         xml.Privacy do
-          xml.PrivacyIndicator false
+          xml.PrivacyIndicator @variables[:privacy_indicator]
         end
       end
     end
