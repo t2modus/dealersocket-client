@@ -18,11 +18,13 @@ module Dealersocket
   # of the API code with the appropriate credentials.
   module Client
     # this method provides access to allow configuring the object
-    def self.configure(public_key: nil, secret_key: nil)
+    def self.configure(public_key: nil, secret_key: nil, username: nil, password: nil)
       if public_key.nil? && secret_key.nil?
         yield Configuration.instance
       else
-        Configuration.instance.configure(public_key: public_key, secret_key: secret_key)
+        Configuration.instance.configure(
+          public_key: public_key, secret_key: secret_key, username: username, password: password
+        )
       end
     end
 

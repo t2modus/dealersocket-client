@@ -10,7 +10,9 @@ module Dealersocket
         event_params = self.attributes.merge(event_params)
         self.class.validate_params(%i[id], event_params)
         response = self.class.request(method: :post, path: 'eventsales', body: XML::Event.new(event_params).update)
-        response.dig('Response', 'Success') == 'true'
+        success = response.dig('Response', 'Success') == 'true'
+        return success if success
+        raise Error, response.dig('Response', 'ErrorMessage')
       end
 
       class << self
@@ -31,7 +33,7 @@ module Dealersocket
 
         def validate_username_and_password!
           error_message = 'A valid username and password is required for calls to Event.create.'
-          raise Error, error_message if Configuration.instance.valid_username_and_password?
+          raise Error, error_message unless Configuration.instance.valid_username_and_password?
         end
       end
     end

@@ -97,7 +97,7 @@ module XML
           xml.PriorityRankingNumeric @variables[:priority_ranking]
         end
         xml.ProviderParty do
-          given_name, family_name = @variables[:employee_name].split
+          given_name, family_name = @variables[:employee_name]&.split || []
           xml.SpecifiedPerson do
             xml.GivenName given_name
             xml.FamilyName family_name
