@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
-require 'active_support/all'
+# require 'active_support/all'
+require 'active_support/core_ext/hash/conversions'
+require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/numeric/time'
+require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/time/calculations'
+
 # used to build out HTML
 require 'nokogiri'
 
