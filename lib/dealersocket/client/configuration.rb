@@ -5,7 +5,7 @@ require 'http'
 
 module Dealersocket
   module Client
-    # This class is responsible for holding Authentication information for the Volie API
+    # This class is responsible for holding Authentication information for the Dealersocket API
     class Configuration
       include Singleton
 
