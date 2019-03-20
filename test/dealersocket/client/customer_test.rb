@@ -46,6 +46,20 @@ module Dealersocket
         assert_equal [], Customer.search(customer_params)
       end
 
+      # Test checks that if the info back from Dealersocket is missing a phone number,
+      # we still set the key of that missing number
+      def test_customer_info_to_hash_returns_hash_with_all_keys
+        assert_equal Customer.customer_info_to_hash(customer_info, 1)[:home], '1111111111'
+        phones = customer_info_phones
+        _removed = phones.shift
+        customer_info_hash = customer_info
+        customer_info_hash.dig('CustomerInformationDetail', 'CustomerParty', 'SpecifiedPerson')
+                          .store('TelephoneCommunication', phones)
+        customer_hash = Customer.customer_info_to_hash(customer_info_hash, 1)
+        assert customer_hash.key?(:home)
+        assert_nil customer_hash[:home]
+      end
+
       private
 
       def customer_params
@@ -168,6 +182,10 @@ module Dealersocket
             'EntityId' => '768999'
           }
         }
+      end
+
+      def customer_info_phones
+        customer_info.dig('CustomerInformationDetail', 'CustomerParty', 'SpecifiedPerson', 'TelephoneCommunication')
       end
     end
   end
