@@ -53,7 +53,7 @@ module Dealersocket
           person = party_hash['SpecifiedPerson']
           address = person['PostalAddress'] || {}
           phone_numbers = [person['TelephoneCommunication']].flatten.compact
-          phone_number_hash = phone_numbers.each_with_object({}) do |phone_number, object|
+          phone_number_hash = phone_numbers.each_with_object(home: nil, cell: nil, work: nil) do |phone_number, object|
             key = phone_number['UseCode'].downcase.gsub('mobile', 'cell').to_sym
             object[key] = phone_number['CompleteNumber']
           end
