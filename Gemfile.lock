@@ -65,7 +65,7 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.3)
     racc (1.5.2)
-    rake (10.5.0)
+    rake (13.0.6)
     ruby-progressbar (1.9.0)
     safe_yaml (1.0.4)
     tzinfo (2.0.4)
@@ -91,7 +91,7 @@ DEPENDENCIES
   mocha
   pry
   pry-byebug
-  rake (~> 10.0)
+  rake (~> 13.0)
   webmock
 
 BUNDLED WITH
